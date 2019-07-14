@@ -1,0 +1,46 @@
+<div style="text-align:center">
+    <ng-container *ngIf = "gameStatus=='play'; then play;"></ng-container>
+    <ng-container *ngIf = "gameStatus=='wait'; then wait;"></ng-container>
+    <ng-container *ngIf = "gameStatus=='win'; then win;"></ng-container>
+    <ng-container *ngIf = "gameStatus=='lose'; then lose;"></ng-container>
+    <ng-template #play>
+        <h1 style="color: rgb(19, 196, 19)">
+            Your turn
+        </h1>
+    </ng-template>
+    <ng-template #wait>
+        <h1 style="color: rgb(220, 20, 20)">
+            Opponent's move
+        </h1>
+    </ng-template>
+    <ng-template #win>
+        <h1 style="color: rgb(19, 196, 19)">
+            You win!
+        </h1>
+    </ng-template>
+    <ng-template #lose>
+        <h1 style="color: rgb(220, 20, 20)">
+            You lose!
+        </h1>
+    </ng-template>
+</div>
+
+<div style="text-align: center; margin-top: -50px;">
+    <div class="newGameTables">
+    <table class="boardtable">
+        <th colspan="10">Your field</th>
+        <tr *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10];">
+            <td style="width: 15px; height: 15px;" *ngFor="let j of [0,1,2,3,4,5,6,7,8,9,10];" id="{{ 'my'+i+'_'+j }}"><div>{{boardTable[i][j]}}</div></td>
+        </tr>
+    </table>
+    </div>
+    <div class="newGameTables">
+        <table class="boardtable">
+            <th colspan="10">Enemy field</th>
+            <tr *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10];">
+                <td class="pointerTd" style="width: 15px; height: 15px;" *ngFor="let j of [0,1,2,3,4,5,6,7,8,9,10];" id="{{ 'en'+i+'_'+j }}" (click)="move(i, j)" (mouseover)="aimOn(i, j)"
+                (mouseleave)="aimOut(i, j)"><div>{{boardTable[i][j]}}</div></td>
+            </tr>
+        </table>
+    </div>
+</div>

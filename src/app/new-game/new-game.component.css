@@ -1,0 +1,98 @@
+h1{
+    font-size: 3rem;
+    color: #0c74eb;
+    border-collapse: collapse; 
+}
+h2{
+     font-size: 2.2rem;
+     color: #0c74eb;
+     border-collapse: collapse; 
+     padding-left: 25px;
+     padding-right: 25px;
+     /* background-color: #0aff1670; */
+ }
+  .boardtable { 
+    margin: 1em auto;
+    border-collapse:collapse; 
+    font-size: 1.7rem;
+    font-weight: 350; 
+    color: #0c74eb;
+   }
+   .shipTable { 
+        margin: 0 auto;
+        border-collapse:collapse; 
+        color: #0c74eb;
+        cursor: pointer;
+   }
+   .shipTd{
+        width: 5px;
+        height: 5px;
+
+   }
+   .shipTr:hover{
+     background-color: #0c74eb70;
+   }
+   th { 
+    text-align: left; 
+    padding: 5px;
+   }
+   td { 
+     font-size: 0.8rem;
+     font-weight: 950;
+     padding: 10px; 
+     border: 2.8px solid #0c74eb; 
+   }
+.newGameTables{
+    display: inline-block;
+     margin: 2em;
+}
+
+.controlButton{
+     width: 80px;
+     height: 80px;
+     border: 2px solid #0c74eb;
+     display: inline-block;
+     margin-bottom: -4px;
+     cursor: pointer;
+ }
+
+ .controlButton:hover{
+     background-color: #0c74eb50;
+     /* background: #ff1818a1 */
+ }
+
+ #eraser{
+     background-image: url(../images/icon_eraser.svg);
+     background-position: center;
+     background-repeat: no-repeat; 
+     background-size:65% 65%;
+     margin-right: 2em; 
+     margin-left: -1px;
+ }
+ #turn_over{
+     background-image: url(../images/icon_turn_over.svg);
+     background-position: center;
+     background-repeat: no-repeat; 
+     background-size:65% 65%;
+ }
+
+#start:hover{
+     background-color: #0c74eb50;
+ }
+ #back{
+     margin-right: 2em;
+     cursor: pointer;
+     border: 2px solid #0c74eb;
+     display: inline-block;
+     margin-top: -20px;
+ }
+ #back:hover{
+     background-color: #0c74eb50;
+ } 
+ #start{
+     cursor: pointer;
+     border: 2px solid #0c74eb;
+     display: inline-block;
+     margin-top: -20px;
+ }
+ 

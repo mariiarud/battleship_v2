@@ -1,0 +1,43 @@
+table { 
+    width: 12em;
+    margin: 1em auto;
+    border-collapse:separate; 
+    border-spacing: 0 0.5em;
+    font-size: 1.7rem;
+    font-weight: 350; 
+    color: #0c74eb;
+   }
+   th { 
+    text-align: left; 
+    padding: 5px;
+    
+   }
+   td { 
+    padding: 10px; 
+    /* background-color: #008cff; */
+    cursor: pointer;
+    border: 3px solid #0c74eb; 
+   }
+   tr:hover{
+      background-color: #0c74eb40;
+   }
+h1{
+    font-size: 3rem;
+    color: #0c74eb;
+}
+.noteDiv{
+    background-image: url(images/notebook_texture2464.jpg);
+    /* background-color: #fff; */
+    width: 1300px;
+    height: 850px;
+    position: relative;
+    left: 50%;
+    margin-left: -650px;
+    z-index: -1;
+}
+@media all and (max-width: 1010px) {
+    .noteDiv{
+        margin-left: -80px;
+        left: -80px;
+    }
+}

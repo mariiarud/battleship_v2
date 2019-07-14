@@ -1,0 +1,50 @@
+<div style="text-align:center">
+        <h1>
+          New Game
+        </h1>
+</div>
+<!-- <input type="text" name="text" id="loginInput"> -->
+<div style="text-align: center; margin-top: -50px;">
+    <div class="newGameTables">
+    <table class="boardtable">
+        <th colspan="10">Your field</th>
+        <tr *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10];">
+            <td class="boardtd" style="width: 15px; height: 15px;" *ngFor="let j of [0,1,2,3,4,5,6,7,8,9,10];" (mouseover)="shipInAir(i, j)"
+            (mouseleave)="flewAway()" (click)="putShip(i, j)" id="{{ 'el'+i+'_'+j }}"><div>{{boardTable[i][j]}}</div></td>
+        </tr>
+    </table>
+    </div>
+    <div class="newGameTables">
+            <table class="boardtable" style="width: 350px; height: 350px;">
+                <th>Ships</th>
+                <tr *ngFor="let i of [0,1,2,3];">
+                    <td>  
+                        <div>
+                            <table class="shipTable">
+                                <tr class="shipTr" id="{{ 'ship'+i}}" (click)="takeShip(i)"><td id="ship{{i}}" class="shipTd" *ngFor="let j of shipsTable[i];"></td></tr>
+                            </table> 
+                        </div>
+                    </td>
+                    <td style="font-size: 2.1rem; font-weight: 350; ">{{ships[3-i]}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border: 0px; text-align:left; padding-left: 0px; padding-bottom: 0px;">
+                        <div id="turn_over" class="controlButton" (click)="turnOver()" style="margin-right: 2em; margin-left: -1px;">
+                        </div>
+                        <div id="eraser" class="controlButton" (click)="eraser()"></div>
+                    </td>
+                </tr>
+            </table>
+    </div>
+</div>
+<!-- <ng-container *ngIf = "isReady; then wait;"></ng-container> -->
+<div style="text-align: center; width: 102%;">
+    <!-- <div id="back" class="back">
+            <h2>Back</h2>
+    </div> -->
+    <div id="start" class="start" (click)="startGame()">
+            <h2>Start</h2>
+    </div>
+</div>
+
+
