@@ -24,7 +24,7 @@ export class AppComponent {
 	}
 
   ngOnInit(): void {
-    this.socket = io("http://localhost:8080");
+    this.socket = io("https://neliry-battleship-v2.herokuapp.com");
   }
 
   ngAfterViewInit(): void {
