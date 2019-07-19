@@ -10,13 +10,12 @@ export class RoomsComponent implements OnInit {
 rooms: number[] = new Array;
 
   constructor(private homePageService: HomePageService) { 
-    this.homePageService.getRooms().subscribe((data) => {
-      this.rooms = data;
-    });
   }
 
   ngOnInit(){
-
+    this.homePageService.getRooms().subscribe((data) => {
+      this.rooms = data;
+    });
   }
 
   joinRoom(i) {

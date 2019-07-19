@@ -1,17 +1,8 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-
-import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';    
-import {HomePageService} from './home-page.service';
-import { BattleFieldViewComponent } from './battle-field-view/battle-field-view.component';
-
-import { NewGameModule } from './new-game/new-game.module';
-import { OnGameModule } from './on-game/on-game.module';
-import { RoomsModule } from './rooms/rooms.module';
+import { CommonModule } from '@angular/common';
+import {HomePageService} from '../home-page.service';
+import { OnGameComponent } from './on-game.component';
+import { BattleFieldViewModule } from '../battle-field-view/battle-field-view.module';
 
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
@@ -58,19 +49,13 @@ const customNotifierOptions: NotifierOptions = {
 
 @NgModule({
   declarations: [
-    AppComponent
-  ],
+    OnGameComponent],
   imports: [
-    RoomsModule,
-    NewGameModule,
-    OnGameModule,
-    BrowserModule,
-    FormsModule,
-    AppRoutingModule, 
-    BrowserAnimationsModule,
+    CommonModule,
+    BattleFieldViewModule,
     NotifierModule.withConfig(customNotifierOptions)
   ],
-  providers: [HomePageService],
-  bootstrap: [AppComponent]
+  exports:[OnGameComponent],
+  providers: [HomePageService]
 })
-export class AppModule { }
+export class OnGameModule { }

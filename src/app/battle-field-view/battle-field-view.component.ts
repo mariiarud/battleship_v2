@@ -39,4 +39,20 @@ export class BattleFieldViewComponent{
         this.onCellClick.emit(point);
       }
   }
+
+  @Output() onCellMouseOver = new EventEmitter<Point>();
+  shipInAir(i , j) {
+      if(i>0 && j>0){
+        let point = new Point(i-1, j-1);
+        this.onCellMouseOver.emit(point);
+      }
+  }
+  
+  @Output() onCellMouseLeave = new EventEmitter<Point>();
+  flewAway(i , j) {
+      if(i>0 && j>0){
+        let point = new Point(i-1, j-1);
+        this.onCellMouseLeave.emit(point);
+      }
+  }
 }

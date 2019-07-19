@@ -64,6 +64,10 @@ h2{
     background-color: #ff181870;
  }
 
+ .ready{
+    background-color: #0c74eb50;
+ }
+
  #eraser{
      background-image: url(../images/icon_eraser.svg);
      background-position: center;
@@ -98,4 +102,6 @@ h2{
      display: inline-block;
      margin-top: -20px;
  }
+
+
  

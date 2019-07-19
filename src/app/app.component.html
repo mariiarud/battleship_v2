@@ -9,22 +9,8 @@
     {{ title }}
   </h1>
 </div>
-<ng-container *ngIf = "gameStatus=='home'; then home;"></ng-container>
-<ng-container *ngIf = "gameStatus=='new_game'; then new;"></ng-container>
-<ng-container *ngIf = "gameStatus=='on_game'; then start;"></ng-container>
 
-<ng-template #home>
-  <app-rooms></app-rooms>
-</ng-template>
+<router-outlet></router-outlet> 
 
-<ng-template #new>
-  <app-new-game ></app-new-game>
-</ng-template>
-
-<ng-template #start>
-  <app-on-game></app-on-game>
-</ng-template>
-<!-- <router-outlet></router-outlet>  -->
-
-
+<notifier-container></notifier-container>
 

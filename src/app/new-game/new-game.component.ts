@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { NotifierService } from 'angular-notifier';
+import { Component} from '@angular/core';
 import {HomePageService} from '../home-page.service';
-
+import { NotifierService } from 'angular-notifier';
+import { Point } from '../point';
 @Component({
   selector: 'app-new-game',
   templateUrl: './new-game.component.html',
   styleUrls: ['./new-game.component.css']
 })
-export class NewGameComponent implements OnInit {
+export class NewGameComponent{
   tableName = "tableName";
   isReady=false;
   myBoard: number[][] = new Array();
@@ -16,9 +16,12 @@ export class NewGameComponent implements OnInit {
   isVerticalMode = false;
   shipsTable = [[0,1,2,3], [0,1,2], [0,1], [0]];
   boardTable = [['','a','b','c','d','e','f','g','h','i','j']]
-
-  constructor(private notifier: NotifierService, private homePageService: HomePageService) { 
+  putedShip = new Map();
+  myFieldStyles =  new Map();
+  isShipTaked: boolean[] = [false, false, false, false];
+  constructor(private notifier: NotifierService,  private homePageService: HomePageService) { 
     this.notifier = notifier;
+
     for (var i = 0; i < 10; i++){
       this.myBoard[i] = [];
           for (var j = 0; j < 10; j++){
@@ -33,23 +36,20 @@ export class NewGameComponent implements OnInit {
                 this.boardTable[i][j]='';
         }
       }
-  }
 
-  ngOnInit() {
-
+    this.myFieldStyles.set(0, "default_element");
+    this.myFieldStyles.set(1, "pased_ship");
+    this.myFieldStyles.set(2, "default_element");
+    this.myFieldStyles.set(3, "taked_ship");
+    this.myFieldStyles.set(4, "damage_ship");
+    this.myFieldStyles.set(5, "dead_ship");
   }
 
   ngAfterViewInit(){
-    // this.homePageService.
     this.homePageService.waitOpponent().subscribe((data) => {
       this.isReady = true;
       this.notifier.notify( "info", "Waiting for the second player..." );
     });
-    // this.socket.on("waitOpponent", () =>{
-    //   this.isReady = true;
-    //   this.notifier.notify( "info", "Waiting for the second player..." );
-    //   document.getElementById('eraser').style.cssText = "background-color: #ff181870;"; 
-    // });
   }
 
   takeShip(i): void{
@@ -62,138 +62,109 @@ export class NewGameComponent implements OnInit {
     let id;
     for(let j = 0; j<4; j++){
       id = "ship"+j;
-      document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
+      this.isShipTaked[j]=false;
+      // document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
     }  
     id = "ship"+i;
-      document.getElementById(id).style.cssText = "background-color: #0c74eb70;"; 
+    this.isShipTaked[i]=true;
+      // document.getElementById(id).style.cssText = "background-color: #0c74eb70;"; 
   }
 
-  putShip(i, j): void{
-    if(i!=0 && j!=0){
-      if(this.putToBorder(i-1, j-1)){
-        let id;
-        if(this.isVerticalMode){
-          for(let n = 0; n < this.shipToMove; n++){
-          ///////////////
-            let k = n;
-          //////////////
-            if((i+n)>=11){
-              k = 10-(i+n);
-            }
-            id = "el"+(i+k)+"_"+j;
-            document.getElementById(id).style.cssText = "background-color: #4b4b4b95;  border: 3px solid #4d4d4d;"; 
-          }
-        }
-        else{
-          for(let n = 0; n < this.shipToMove; n++){
-            ///////////////
-              let k = n;
-            //////////////
-              if((j+n)>=11){
-                k = 10-(j+n);
-              }
-              id = "el"+i+"_"+(j+k);
-              document.getElementById(id).style.cssText = "background-color: #4b4b4b95;  border: 3px solid #4d4d4d;"; 
-          }
-        }
-        this.ships[this.shipToMove-1]--;
-        if(this.ships[this.shipToMove-1]==0){
-          id = "ship"+(4-this.shipToMove);
-          document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
-          this.shipToMove = -10;
-        }
+  putShip(point: Point): void{
+    if(this.putToMyBoard(point.x, point.y)){
+      // let id;
+      --this.ships[this.shipToMove-1];
+      if(this.ships[this.shipToMove-1]==0){
+        this.isShipTaked[4-this.shipToMove]=false;
+        // id = "ship"+(4-this.shipToMove);
+        // document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
+        this.shipToMove = -10;
       }
     }
   }
 
-  putToBorder(iBase, jBase): boolean{
-    let testBord: number[][] = this.copyBoard(this.myBoard);
-    let i = iBase;
-    let j = jBase;
-    if(this.isVerticalMode){
-      if(i+this.shipToMove-1>=10){
-        i += 9-(i+this.shipToMove-1);
-      }
-      for(let y=i-1; y<=i+this.shipToMove; y++){
+  putToMyBoard(iBase, jBase): boolean{
+
+    let checkMap = new Map();
+    let chackBoard = [];
+    this.putedShip.clear();
+
+    for (let i = 0; i < this.myBoard.length; i++)
+    chackBoard[i] = this.myBoard[i].slice();
+    
+    checkMap = this.searchShipsNearBy(checkMap, iBase, jBase, chackBoard);
+    if(!checkMap.has(1)&&!checkMap.has(2)){
+        this.putedShip.forEach(e => {
+        this.myBoard[e[1]][e[0]]=1;
+      });
+      this.myBoard[iBase][jBase]=1;
+      return true;
+    }
+    else{
+      this.notifier.notify( "warning", "Cannot be placed here!" );
+      return false;
+        // field[point.x][point.y]=4;
+        // board[point.x][point.y]=4;
+    }
+    // hitedShip.clear();
+
+    // this.myBoard = this.copyBoard(testBord);
+    
+  }
+
+  searchShipsNearBy(checkMap, i, j, chackBoard){
+    chackBoard[i][j] = 0;
+    for(let x=j-1; x<=j+1; x++){
+      if(x>=0 && x<10)
+      for(let y=i-1; y<=i+1; y++){
         if(y>=0 && y<10){
-          for(let x=j-1; x<=j+1; x++){
-            if(x>=0 && x<10){
-              if(y>=i && y<i+this.shipToMove && x==j){
-                if(testBord[y][x]!=0){
-                  this.notifier.notify( "warning", "Cannot be placed here!" );
-                  return false;
-                }
-                testBord[y][x]=1;
-              }
-              else testBord[y][x]=2;
-            }
+          checkMap.set(chackBoard[y][x], chackBoard[y][x])
+          if(chackBoard[y][x] == 3){
+            this.putedShip.set(x+"_"+y, [x, y])
+            checkMap = this.searchShipsNearBy(checkMap, y, x, chackBoard);
           }
         }
       }
     }
-    else
-    {
-      if(j+this.shipToMove-1>=10){
-        j += 9-(j+this.shipToMove-1);
-      }
-      for(let x=j-1; x<=j+this.shipToMove; x++){
-        if(x>=0 && x<10){
-          for(let y=i-1; y<=i+1; y++){
-            if(y>=0 && y<10){
-              if(x>=j && x<j+this.shipToMove && y==i){
-                if(testBord[y][x]!=0){
-                  this.notifier.notify( "warning", "Cannot be placed here!" );
-                  return false;
-                }
-                testBord[y][x]=1;
-              }
-              else testBord[y][x]=2;
-            }
-          }
-        }
-      }
-    }
-    this.myBoard = this.copyBoard(testBord);
-    return true;
+    return checkMap;
   }
 
-  shipInAir(i, j): void{
-    if(this.shipToMove!=-10 && i!=0 && j!=0){
+  shipInAir(point: Point): void{
+    let i = point.x;
+    let j = point.y;
+    if(this.shipToMove!=-10){
       let id;
       if(this.isVerticalMode){
         for(let n = 0; n < this.shipToMove; n++){
           let x = n;
-          if((i+n)>=11){
-            x = 10-(i+n);
+          if((i+n)>=10){
+            x = 9-(i+n);
           }
-          if(this.myBoard[i+x-1][j-1]!=1){
-            id = "el"+(i+x)+"_"+j;
-          document.getElementById(id).style.cssText = "background-color: #0c74eb70;"; 
+          if(this.myBoard[i+x][j]!=1){
+            this.myBoard[i+x][j] = 3;
           }
         }
       }
       else{
         for(let n = 0; n < this.shipToMove; n++){
           let x = n;
-          if((j+n)>=11){
-            x = 10-(j+n);
+          if((j+n)>=10){
+            x = 9-(j+n);
           }
-          if(this.myBoard[i-1][j+x-1]!=1){
-            id = "el"+i+"_"+(j+x);
-          document.getElementById(id).style.cssText = "background-color: #0c74eb70;"; 
+          if(this.myBoard[i][j+x]!=1){
+            this.myBoard[i][j+x] = 3; 
           }
         }
       }
     }
   }
 
-  flewAway(): void{
+  flewAway(point: Point): void{
     if(this.shipToMove!=-10){
-      for(let i=1; i<11; i++){
-        for(let j=1; j<11; j++){
-          if(this.myBoard[i-1][j-1]!=1){
-            let id = "el"+i+"_"+j;
-            document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
+      for(let i=0; i<10; i++){
+        for(let j=0; j<10; j++){
+          if(this.myBoard[i][j]!=1){
+            this.myBoard[i][j] = 0;
           }
         }
       }
@@ -240,27 +211,20 @@ export class NewGameComponent implements OnInit {
   }
 
   startGame(){
-    
     if(!this.isReady){
       let check = true;
-      // for( let i=0; i<4; i++){
-      //   if (this.ships[i]!=0){
-      //     check = false;
-      //     break;
-      //   }
-      // }
+      for( let i=0; i<4; i++){
+        if (this.ships[i]!=0){
+          check = false;
+          break;
+        }
+      }
       if(check){
-        // this.socket.emit("startGame", this.currentRoom, this.playerId, this.myBoard);
         this.homePageService.startGame(this.myBoard);
-
-        document.getElementById("start").style.cssText = "background-color: #0c74eb50;"; 
       }
       else{
         this.notifier.notify( "warning", "Some ships is unused!" );
       }
-    }
-    else{
-      this.notifier.notify( "info", "Waiting for the second player..." );
     }
   }
 }

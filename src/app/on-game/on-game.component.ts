@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NotifierService } from 'angular-notifier';
 import { Point } from '../point';
+import { NotifierService } from 'angular-notifier';
 import {HomePageService} from '../home-page.service';
 
 @Component({
@@ -21,7 +21,8 @@ export class OnGameComponent implements OnInit {
   gameStatus = 'wait';
 
   constructor(private notifier: NotifierService, private homePageService: HomePageService) { 
-
+    this.notifier = notifier;
+    
       for (var i = 0; i < 10; i++){
         this.enemyField[i] = [];
           for (var j = 0; j < 10; j++){

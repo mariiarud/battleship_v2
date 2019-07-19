@@ -48,7 +48,14 @@ export class HomePageService{
   }
 
   opponentLeave(){
-    return this.observeEvent("opponentLeave");
+    let soketObservable = new Observable(observer => {
+      this.socket.on("opponentLeave", (data) => {
+        observer.next(data);
+        // console.log("Opponent ");
+      });
+    });
+    return soketObservable;
+    // return this.observeEvent("opponentLeave");
   }
 
   waitOpponent(){

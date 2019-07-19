@@ -1,17 +1,17 @@
 h1{
     font-size: 3rem;
     color: #0c74eb;
-    border-collapse: collapse; 
+    /* border-collapse: collapse;  */
 }
 h2{
      font-size: 2.2rem;
      color: #0c74eb;
-     border-collapse: collapse; 
+     /* border-collapse: collapse;  */
      padding-left: 25px;
      padding-right: 25px;
      /* background-color: #0aff1670; */
  }
-  .boardtable { 
+.boardtable { 
     margin: 1em auto;
     border-collapse:collapse; 
     font-size: 1.7rem;
@@ -38,6 +38,15 @@ td {
     font-size: 1rem;
     line-height: 0em;
     color: #0c74eb;
+}
+
+.pased_ship{
+    border: 2.8px double #4d4d4d; 
+    background-color: #4b4b4b95;
+}
+
+.taked_ship{
+    background-color: #0c74eb70;
 }
 
 .intact_ship{

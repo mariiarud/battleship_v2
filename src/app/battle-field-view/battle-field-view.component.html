@@ -3,7 +3,9 @@
     <tr *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10];">
         <td *ngFor="let j of [0,1,2,3,4,5,6,7,8,9,10];"
             [ngClass]="getStyle(i,j)"
-            (click)="cellChick(i, j)">
+            (click)="cellChick(i, j)"
+            (mouseover)="shipInAir(i, j)"
+            (mouseleave)="flewAway(i, j)">
             <div>{{boardTable[i][j]}}
                <b *ngIf = "getStyle(i,j)=='miss_shot'">●</b> 
             </div>
