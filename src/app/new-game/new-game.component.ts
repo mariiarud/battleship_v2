@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NotifierService } from 'angular-notifier';
 import {HomePageService} from '../home-page.service';
 
@@ -8,7 +8,6 @@ import {HomePageService} from '../home-page.service';
   styleUrls: ['./new-game.component.css']
 })
 export class NewGameComponent implements OnInit {
-  private notifier: NotifierService;
   tableName = "tableName";
   isReady=false;
   myBoard: number[][] = new Array();
@@ -18,7 +17,7 @@ export class NewGameComponent implements OnInit {
   shipsTable = [[0,1,2,3], [0,1,2], [0,1], [0]];
   boardTable = [['','a','b','c','d','e','f','g','h','i','j']]
 
-  constructor(notifier: NotifierService, private homePageService: HomePageService) { 
+  constructor(private notifier: NotifierService, private homePageService: HomePageService) { 
     this.notifier = notifier;
     for (var i = 0; i < 10; i++){
       this.myBoard[i] = [];

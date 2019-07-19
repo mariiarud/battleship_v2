@@ -13,6 +13,7 @@ import { OnGameComponent } from './on-game/on-game.component';
 import { EnemyBoardComponent } from './enemy-board/enemy-board.component';
 import { BattleFieldViewComponent } from './battle-field-view/battle-field-view.component';
 import { RoomsComponent } from './rooms/rooms.component';
+import {HomePageService} from './home-page.service';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -56,7 +57,7 @@ const customNotifierOptions: NotifierOptions = {
 };
 
 const appRoutes: Routes =[
-  { path: '', component: RoomsComponent},
+  { path: 'home', component: RoomsComponent},
   { path: 'new_game', component: NewGameComponent},
   { path: 'on_game', component: OnGameComponent }
 ];
@@ -74,11 +75,10 @@ const appRoutes: Routes =[
     BrowserModule,
     AppRoutingModule, 
     BrowserAnimationsModule,  
-    NotifierModule.withConfig(customNotifierOptions),
-    BrowserModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    NotifierModule.withConfig(customNotifierOptions)
   ],
-  providers: [],
+  providers: [HomePageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

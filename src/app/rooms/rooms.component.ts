@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {HomePageService} from '../home-page.service';
 
 @Component({
@@ -18,12 +18,6 @@ rooms: number[] = new Array;
   ngOnInit(){
 
   }
-
-  // ngAfterViewInit(){
-  //   this.homePageService.getRooms().subscribe((data) => {
-  //     this.rooms = data;
-  //   });
-  // }
 
   joinRoom(i) {
       this.homePageService.joinRoom(i);

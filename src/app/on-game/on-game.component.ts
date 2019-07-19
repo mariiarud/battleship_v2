@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NotifierService } from 'angular-notifier';
 import { Point } from '../point';
-import {OnGameService} from '../on-game.service';
-import {Observable} from 'rxjs';
+import {HomePageService} from '../home-page.service';
 
 @Component({
   selector: 'app-on-game',
@@ -10,9 +9,6 @@ import {Observable} from 'rxjs';
   styleUrls: ['./on-game.component.css']
 })
 export class OnGameComponent implements OnInit {
-  @Input() socket: any;
-  @Input() playerId: string;
-  @Input() currentRoom: string;
 
   myField: number[][] = new Array();
   myBoard: number[][] = new Array();
@@ -23,9 +19,8 @@ export class OnGameComponent implements OnInit {
 
   isTurn: boolean = false;
   gameStatus = 'wait';
-  onGameService : OnGameService;
 
-  constructor(private notifier: NotifierService) { 
+  constructor(private notifier: NotifierService, private homePageService: HomePageService) { 
 
       for (var i = 0; i < 10; i++){
         this.enemyField[i] = [];
@@ -49,39 +44,39 @@ export class OnGameComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.onGameService = new OnGameService(this.socket);
-    this.onGameService.getBoards(this.playerId, this.currentRoom);
+    // this.onGameService = new OnGameService(this.socket);
+    this.homePageService.getBoards();
 
-    this.onGameService.getMyBoard().subscribe((data) => {
+    this.homePageService.getMyBoard().subscribe((data) => {
       this.myField = data;
     });
 
-    this.onGameService.getTurn().subscribe((data) => {
+    this.homePageService.getTurn().subscribe((data) => {
       this.isTurn = data;
       this.changeTurn();
     });
   }
 
   ngAfterViewInit(){
-    this.onGameService.getEnemyField().subscribe((data) => {
+    this.homePageService.getEnemyField().subscribe((data) => {
       this.enemyField = data;
     });
 
-    this.onGameService.getMyField().subscribe((data) => {
+    this.homePageService.getMyField().subscribe((data) => {
       this.updateMyField(data);
     });
 
-    this.onGameService.changeTurn().subscribe(() => {
+    this.homePageService.changeTurn().subscribe(() => {
       this.isTurn = !this.isTurn;
       this.changeTurn();
     });
 
-    this.onGameService.onWin().subscribe(() => {
+    this.homePageService.onWin().subscribe(() => {
       this.gameStatus = 'win';
       this.notifier.notify( "success", "You win!" );
     });
 
-    this.onGameService.onLose().subscribe((data) => {
+    this.homePageService.onLose().subscribe((data) => {
       this.gameStatus = 'lose';
       this.updateEnemyField(data);
       this.notifier.notify( "error", "You lose!" );
@@ -90,7 +85,7 @@ export class OnGameComponent implements OnInit {
 
   shot(point: Point){
     if(this.isTurn && this.enemyField[point.x][point.y]==0)
-    this.onGameService.shot(this.currentRoom, this.playerId, this.enemyField, point);
+    this.homePageService.shot(this.enemyField, point);
   }
 
   changeTurn(){

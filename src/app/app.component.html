@@ -10,22 +10,20 @@
   </h1>
 </div>
 <ng-container *ngIf = "gameStatus=='home'; then home;"></ng-container>
-<ng-container *ngIf = "gameStatus=='new'; then new;"></ng-container>
-<ng-container *ngIf = "gameStatus=='start'; then start;"></ng-container>
+<ng-container *ngIf = "gameStatus=='new_game'; then new;"></ng-container>
+<ng-container *ngIf = "gameStatus=='on_game'; then start;"></ng-container>
+
 <ng-template #home>
   <app-rooms></app-rooms>
 </ng-template>
 
 <ng-template #new>
-  <app-new-game [socket]="socket" [playerId]="playerId" [currentRoom]="currentRoom"></app-new-game>
+  <app-new-game ></app-new-game>
 </ng-template>
 
 <ng-template #start>
-  <app-on-game [socket]="socket" [playerId]="playerId" [currentRoom]="currentRoom"></app-on-game>
+  <app-on-game></app-on-game>
 </ng-template>
-
-<notifier-container></notifier-container>
-
 <!-- <router-outlet></router-outlet>  -->
 
 
