@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
-import io from "socket.io-client";
 import { NotifierService } from 'angular-notifier';
+import {HomePageService} from './home-page.service';
 
 @Component({
   selector: 'app-root',
@@ -10,68 +10,72 @@ import { NotifierService } from 'angular-notifier';
 export class AppComponent {
   timeLeft: number = 2;
   title = 'Battleship';
-  isCall = false;
   gameStatus = 'home';
-  playerId: string = '';
-  private socket: any;
-  rooms = [];
-  currentRoom = -1;
+
   private notifier: NotifierService;
-  score = 20;
   
-  public constructor( notifier: NotifierService ) {
+  public constructor( notifier: NotifierService, private homePageService: HomePageService ) {
 		this.notifier = notifier;
 	}
 
   ngOnInit(): void {
-    this.socket = io("https://neliry-battleship-v2.herokuapp.com");
+
   }
 
   ngAfterViewInit(): void {
-    this.socket.on("callReset", ()=>{
-      this.isCall=false;
+
+    this.homePageService.changeGameStatus().subscribe((data) => {
+      this.gameStatus = data;
     });
-    this.socket.on("roomStatus", data =>{
-      this.rooms = data;
-    });
-    this.socket.on("newPlayer", (id, room) =>{
-      this.playerId = id;
-      this.gameStatus = 'new';
-      this.currentRoom = room;
-    });
-    this.socket.on("roomIsFull", () =>{
+
+    this.homePageService.roomIsFull().subscribe(() => {
       this.notifier.notify( "warning", "Room is occupied!" );
     });
-    this.socket.on("rollCall", id=>{
-      if(this.playerId == '' && !this.isCall){
-        this.isCall = true;
-        this.socket.emit("iAmGuest");
-      }
-      else
-      if(this.playerId == id)
-        this.socket.emit("iAmHere", this.playerId, this.currentRoom);
-    })
-    this.socket.on("startNewGame", ()=>{
-      this.gameStatus = 'start';
-    });
-    this.socket.on("playerLeave", room=>{
-      if(this.currentRoom == room){
-        this.notifier.notify( "error", "Opponent left the game!" );
-        let timeLeft: number = 2;
-        let interval = setInterval(() => {
-          if(timeLeft > 0) {
-            timeLeft--;
-          } else {
-            this.gameStatus = "home";
-            clearInterval(interval);
-          }
-        },1000);
-      }
+
+    this.homePageService.opponentLeave().subscribe(() => {
+      this.notifier.notify( "error", "Opponent left the game!" );
+      let timeLeft: number = 2;
+      let interval = setInterval(() => {
+        if(timeLeft > 0) {
+          timeLeft--;
+        } else {
+          this.gameStatus = "home";
+          clearInterval(interval);
+        }
+      },1000);
     });
   }
 
-  joinRoom(i): void {
-    this.socket.emit("joinRoom", i);
+//   joinRoom(i): void {
+
+//     // const source$ = from([
+//     //   { name: 'Brian' },
+//     //   { name: 'Joe' },
+//     //   { name: 'Joe' },
+//     //   { name: 'Sue' }
+//     // ]);
     
-  }
+//     // source$
+//     //   .pipe(distinctUntilChanged((prev, curr) => prev.name === curr.name), (e)=> e.name )
+//     //   .subscribe(console.log);
+
+//   //   // this.socket.emit("joinRoom", i);
+
+//   interface Person {
+//     age: number,
+//     name: string
+//  }
+  
+//  const source$ = of<Person>(
+//      { age: 4, name: 'Foo'},
+//      { age: 7, name: 'Bar'},
+//      { age: 5, name: 'Foo'},
+//      { age: 6, name: 'Foo'},
+//    );
+
+//    source$.pipe(
+//      distinctUntilChanged(null, (p: Person) => p.name),
+//    )
+//    .subscribe(x => console.log(x));
+//   }
 }

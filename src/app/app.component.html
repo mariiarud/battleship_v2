@@ -13,14 +13,7 @@
 <ng-container *ngIf = "gameStatus=='new'; then new;"></ng-container>
 <ng-container *ngIf = "gameStatus=='start'; then start;"></ng-container>
 <ng-template #home>
-  <div >
-    <table class="roomTable">
-      <tr *ngFor="let i of [0,1,2];" class="roomtr" (click)="joinRoom(i)">
-        <td style="width: 85%;">Room {{i+1}}</td>
-        <td style="border-left: 0px;">{{rooms[i]}}/2</td>
-      </tr>
-    </table>
-  </div>
+  <app-rooms></app-rooms>
 </ng-template>
 
 <ng-template #new>
@@ -28,7 +21,12 @@
 </ng-template>
 
 <ng-template #start>
-    <app-on-game [socket]="socket" [playerId]="playerId" [currentRoom]="currentRoom"></app-on-game>
+  <app-on-game [socket]="socket" [playerId]="playerId" [currentRoom]="currentRoom"></app-on-game>
 </ng-template>
+
 <notifier-container></notifier-container>
-<router-outlet></router-outlet>
+
+<!-- <router-outlet></router-outlet>  -->
+
+
+

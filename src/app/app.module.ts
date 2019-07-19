@@ -4,10 +4,15 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import {Routes, RouterModule} from '@angular/router';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';    
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { NewGameComponent } from './new-game/new-game.component';
 import { OnGameComponent } from './on-game/on-game.component';
+import { EnemyBoardComponent } from './enemy-board/enemy-board.component';
+import { BattleFieldViewComponent } from './battle-field-view/battle-field-view.component';
+import { RoomsComponent } from './rooms/rooms.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -50,17 +55,28 @@ const customNotifierOptions: NotifierOptions = {
   }
 };
 
+const appRoutes: Routes =[
+  { path: '', component: RoomsComponent},
+  { path: 'new_game', component: NewGameComponent},
+  { path: 'on_game', component: OnGameComponent }
+];
+
 @NgModule({
   declarations: [
     AppComponent,
     NewGameComponent,
-    OnGameComponent
+    OnGameComponent,
+    EnemyBoardComponent,
+    BattleFieldViewComponent,
+    RoomsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule, 
     BrowserAnimationsModule,  
-    NotifierModule.withConfig(customNotifierOptions)
+    NotifierModule.withConfig(customNotifierOptions),
+    BrowserModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

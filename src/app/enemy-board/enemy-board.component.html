@@ -1,0 +1,8 @@
+<table class="boardtable">
+    <th colspan="10">Enemy field</th>
+    <tr *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10];">
+        <td class="boardtd" style="width: 15px; height: 15px;" *ngFor="let j of [0,1,2,3,4,5,6,7,8,9,10];" (mouseover)="aimOn(i, j)"
+        (mouseleave)="aimOut(i, j)" (click)="move([i, j])" id="{{ 'en'+i+'_'+j }}"><div>{{boardTable[i][j]}}</div></td>
+    </tr>
+</table>
+

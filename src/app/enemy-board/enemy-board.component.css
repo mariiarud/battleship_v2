@@ -1,0 +1,30 @@
+h1{
+    font-size: 3rem;
+    color: #0c74eb;
+    border-collapse: collapse; 
+}
+h2{
+     font-size: 2.2rem;
+     color: #0c74eb;
+     border-collapse: collapse; 
+     padding-left: 25px;
+     padding-right: 25px;
+     /* background-color: #0aff1670; */
+ }
+  .boardtable { 
+    margin: 1em auto;
+    border-collapse:collapse; 
+    font-size: 1.7rem;
+    font-weight: 350; 
+    color: #0c74eb;
+   }
+th { 
+    text-align: left; 
+    padding: 5px;
+}
+td { 
+    font-size: 0.8rem;
+    font-weight: 950;
+    padding: 10px; 
+    border: 2.8px solid #0c74eb; 
+}

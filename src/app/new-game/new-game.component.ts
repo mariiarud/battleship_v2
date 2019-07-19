@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NotifierService } from 'angular-notifier';
+import {HomePageService} from '../home-page.service';
 
 @Component({
   selector: 'app-new-game',
@@ -8,9 +9,7 @@ import { NotifierService } from 'angular-notifier';
 })
 export class NewGameComponent implements OnInit {
   private notifier: NotifierService;
-  @Input() socket: any;
-  @Input() playerId: string;
-  @Input() currentRoom: string;
+  tableName = "tableName";
   isReady=false;
   myBoard: number[][] = new Array();
   shipToMove = -10;
@@ -19,7 +18,7 @@ export class NewGameComponent implements OnInit {
   shipsTable = [[0,1,2,3], [0,1,2], [0,1], [0]];
   boardTable = [['','a','b','c','d','e','f','g','h','i','j']]
 
-  constructor(notifier: NotifierService) { 
+  constructor(notifier: NotifierService, private homePageService: HomePageService) { 
     this.notifier = notifier;
     for (var i = 0; i < 10; i++){
       this.myBoard[i] = [];
@@ -42,11 +41,16 @@ export class NewGameComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    this.socket.on("waiting", () =>{
+    // this.homePageService.
+    this.homePageService.waitOpponent().subscribe((data) => {
       this.isReady = true;
       this.notifier.notify( "info", "Waiting for the second player..." );
-      document.getElementById('eraser').style.cssText = "background-color: #ff181870;"; 
     });
+    // this.socket.on("waitOpponent", () =>{
+    //   this.isReady = true;
+    //   this.notifier.notify( "info", "Waiting for the second player..." );
+    //   document.getElementById('eraser').style.cssText = "background-color: #ff181870;"; 
+    // });
   }
 
   takeShip(i): void{
@@ -240,14 +244,16 @@ export class NewGameComponent implements OnInit {
     
     if(!this.isReady){
       let check = true;
-      for( let i=0; i<4; i++){
-        if (this.ships[i]!=0){
-          check = false;
-          break;
-        }
-      }
+      // for( let i=0; i<4; i++){
+      //   if (this.ships[i]!=0){
+      //     check = false;
+      //     break;
+      //   }
+      // }
       if(check){
-        this.socket.emit("startGame", this.currentRoom, this.playerId, this.myBoard);
+        // this.socket.emit("startGame", this.currentRoom, this.playerId, this.myBoard);
+        this.homePageService.startGame(this.myBoard);
+
         document.getElementById("start").style.cssText = "background-color: #0c74eb50;"; 
       }
       else{

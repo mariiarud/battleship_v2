@@ -1,0 +1,8 @@
+<div >
+    <table class="roomTable">
+      <tr *ngFor="let i of [0,1,2];" class="roomtr" (click)="joinRoom(i)">
+        <td style="width: 85%;">Room {{i+1}}</td>
+        <td style="border-left: 0px;">{{rooms[i]}}/2</td>
+      </tr>
+    </table>
+</div>
