@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Point } from '../point';
+import { Point } from '../../point';
 import { NotifierService } from 'angular-notifier';
-import {HomePageService} from '../home-page.service';
+import { BattleshipService } from '../../services/battleship.service';
+import {OnGameService} from '../../services/on-game.service';
 
 @Component({
   selector: 'app-on-game',
@@ -20,7 +21,7 @@ export class OnGameComponent implements OnInit {
   isTurn: boolean = false;
   gameStatus = 'wait';
 
-  constructor(private notifier: NotifierService, private homePageService: HomePageService) { 
+  constructor(private notifier: NotifierService, private battleshipService: BattleshipService, private onGameService: OnGameService) { 
     this.notifier = notifier;
     
       for (var i = 0; i < 10; i++){
@@ -30,7 +31,7 @@ export class OnGameComponent implements OnInit {
       }}
 
     this.myFieldStyles.set(0, "default_element");
-    this.myFieldStyles.set(1, "intact_ship");
+    this.myFieldStyles.set(1, "alive_ship");
     this.myFieldStyles.set(2, "default_element");
     this.myFieldStyles.set(3, "miss_shot");
     this.myFieldStyles.set(4, "damage_ship");
@@ -41,52 +42,51 @@ export class OnGameComponent implements OnInit {
     this.enemyFieldStyles.set(2, "enemy_element");
     this.enemyFieldStyles.set(3, "miss_shot");
     this.enemyFieldStyles.set(4, "damage_ship");
-    this.enemyFieldStyles.set(5, "dead_ship");
+    this.enemyFieldStyles.set(5, "killed_ship");
   }
 
   ngOnInit() {
-    // this.onGameService = new OnGameService(this.socket);
-    this.homePageService.getBoards();
+    this.battleshipService.getBoards();
 
-    this.homePageService.getMyBoard().subscribe((data) => {
-      this.myField = data;
-    });
+    this.battleshipService.getMyBoard().subscribe(data => 
+      this.myField = data
+    );
 
-    this.homePageService.getTurn().subscribe((data) => {
+    this.battleshipService.getTurn().subscribe((data) => {
       this.isTurn = data;
       this.changeTurn();
     });
   }
 
   ngAfterViewInit(){
-    this.homePageService.getEnemyField().subscribe((data) => {
-      this.enemyField = data;
-    });
+    this.battleshipService.getEnemyField().subscribe( data =>
+      this.enemyField = data
+    );
 
-    this.homePageService.getMyField().subscribe((data) => {
-      this.updateMyField(data);
-    });
+    this.battleshipService.getMyField().subscribe( data =>
+      this.myField = this.onGameService.updateMyField(data, this.myField)
+    );
 
-    this.homePageService.changeTurn().subscribe(() => {
+    this.battleshipService.changeTurn().subscribe(() => {
       this.isTurn = !this.isTurn;
       this.changeTurn();
     });
 
-    this.homePageService.onWin().subscribe(() => {
+    this.battleshipService.onWin().subscribe(() => {
       this.gameStatus = 'win';
       this.notifier.notify( "success", "You win!" );
     });
 
-    this.homePageService.onLose().subscribe((data) => {
+    this.battleshipService.onLose().subscribe((data) => {
       this.gameStatus = 'lose';
-      this.updateEnemyField(data);
+      this.enemyField = this.onGameService.updateEnemyField(data, this.enemyField);
       this.notifier.notify( "error", "You lose!" );
     });
   }
 
   shot(point: Point){
     if(this.isTurn && this.enemyField[point.x][point.y]==0)
-    this.homePageService.shot(this.enemyField, point);
+    this.battleshipService.shot(this.enemyField, point);
   }
 
   changeTurn(){
@@ -94,23 +94,5 @@ export class OnGameComponent implements OnInit {
       this.gameStatus = 'play'
     else
       this.gameStatus = 'wait'
-  }
-
-  updateMyField(field:number[][]){
-    for(let i=0; i<field.length; i++){
-      for(let j=0; j<field[i].length; j++){
-        if(field[i][j]!=0)
-          this.myField[i][j]=field[i][j];
-      }
-    }
-  }
-
-  updateEnemyField(field:number[][]){
-    for(let i=0; i<field.length; i++){
-      for(let j=0; j<field[i].length; j++){
-        if(field[i][j]==1)
-          this.enemyField[i][j]=1;
-      }
-    }
   }
 }

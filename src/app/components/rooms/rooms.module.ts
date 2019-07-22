@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HomePageService} from '../home-page.service';
+import {BattleshipService} from '../../services/battleship.service';
 import { RoomsComponent } from './rooms.component';
 
 @NgModule({
@@ -9,6 +9,6 @@ import { RoomsComponent } from './rooms.component';
     CommonModule
   ],
   exports:[RoomsComponent],
-  providers: [HomePageService]
+  providers: [BattleshipService]
 })
 export class RoomsModule { }

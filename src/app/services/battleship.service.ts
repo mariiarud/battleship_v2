@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class HomePageService{
+export class BattleshipService{
 
   socket: any;
   playerId: string = '';

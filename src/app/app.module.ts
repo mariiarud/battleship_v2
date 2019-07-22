@@ -6,12 +6,11 @@ import { AppComponent } from './app.component';
 
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';    
-import {HomePageService} from './home-page.service';
-import { BattleFieldViewComponent } from './battle-field-view/battle-field-view.component';
+import { BattleshipService} from './services/battleship.service';
 
-import { NewGameModule } from './new-game/new-game.module';
-import { OnGameModule } from './on-game/on-game.module';
-import { RoomsModule } from './rooms/rooms.module';
+import { NewGameModule } from './components/new-game/new-game.module';
+import { OnGameModule } from './components/on-game/on-game.module';
+import { RoomsModule } from './components/rooms/rooms.module';
 
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
@@ -70,7 +69,7 @@ const customNotifierOptions: NotifierOptions = {
     BrowserAnimationsModule,
     NotifierModule.withConfig(customNotifierOptions)
   ],
-  providers: [HomePageService],
+  providers: [BattleshipService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

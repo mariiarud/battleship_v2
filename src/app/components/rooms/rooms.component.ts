@@ -1,25 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import {HomePageService} from '../home-page.service';
+import {BattleshipService} from '../../services/battleship.service';
 
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.css']
 })
+
 export class RoomsComponent implements OnInit {
 rooms: number[] = new Array;
 
-  constructor(private homePageService: HomePageService) { 
+  constructor(private battleshipService: BattleshipService) { 
   }
 
   ngOnInit(){
-    this.homePageService.getRooms().subscribe((data) => {
+    this.battleshipService.getRooms().subscribe((data) => {
       this.rooms = data;
     });
   }
 
   joinRoom(i) {
-      this.homePageService.joinRoom(i);
+      this.battleshipService.joinRoom(i);
   }
 
 }
+
+

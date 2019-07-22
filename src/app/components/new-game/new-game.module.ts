@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HomePageService} from '../home-page.service';
+import { BattleshipService } from '../../services/battleship.service';
 import { NewGameComponent } from './new-game.component';
 import { BattleFieldViewModule } from '../battle-field-view/battle-field-view.module';
 
@@ -55,6 +55,6 @@ const customNotifierOptions: NotifierOptions = {
     NotifierModule.withConfig(customNotifierOptions)
   ],
   exports:[NewGameComponent],
-  providers: [HomePageService]
+  providers: [BattleshipService]
 })
 export class NewGameModule { }

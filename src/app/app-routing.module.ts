@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { NewGameComponent } from './new-game/new-game.component';
-import { RoomsComponent } from './rooms/rooms.component';
-import { OnGameComponent } from './on-game/on-game.component';
+import { NewGameComponent } from './components/new-game/new-game.component';
+import { RoomsComponent } from './components/rooms/rooms.component';
+import { OnGameComponent } from './components/on-game/on-game.component';
 // const routes: Routes = [];
 
 const routes: Routes = [

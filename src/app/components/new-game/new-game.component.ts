@@ -1,7 +1,7 @@
 import { Component} from '@angular/core';
-import {HomePageService} from '../home-page.service';
+import {BattleshipService} from '../../services/battleship.service';
 import { NotifierService } from 'angular-notifier';
-import { Point } from '../point';
+import { Point } from '../../point';
 @Component({
   selector: 'app-new-game',
   templateUrl: './new-game.component.html',
@@ -9,17 +9,20 @@ import { Point } from '../point';
 })
 export class NewGameComponent{
   tableName = "tableName";
+
   isReady=false;
   myBoard: number[][] = new Array();
-  shipToMove = -10;
-  ships: number[]= [4, 3, 2, 1];
-  isVerticalMode = false;
   shipsTable = [[0,1,2,3], [0,1,2], [0,1], [0]];
-  boardTable = [['','a','b','c','d','e','f','g','h','i','j']]
+  ships: number[]= [4, 3, 2, 1];
+  shipToMove = -10;
+  
+  isShipTaked: boolean[] = [false, false, false, false];
+  isVerticalMode = false;
+
   putedShip = new Map();
   myFieldStyles =  new Map();
-  isShipTaked: boolean[] = [false, false, false, false];
-  constructor(private notifier: NotifierService,  private homePageService: HomePageService) { 
+
+  constructor(private notifier: NotifierService,  private battleshipService: BattleshipService) { 
     this.notifier = notifier;
 
     for (var i = 0; i < 10; i++){
@@ -27,47 +30,40 @@ export class NewGameComponent{
           for (var j = 0; j < 10; j++){
               this.myBoard[i][j] = 0;
       }}
-      for (var i = 1; i < 11; i++){
-        this.boardTable[i]=[];
-            for (var j = 0; j < 11; j++){
-              if(j==0)
-                this.boardTable[i][j]=''+i;
-              else  
-                this.boardTable[i][j]='';
-        }
-      }
 
     this.myFieldStyles.set(0, "default_element");
-    this.myFieldStyles.set(1, "pased_ship");
+    this.myFieldStyles.set(1, "alive_ship");
     this.myFieldStyles.set(2, "default_element");
     this.myFieldStyles.set(3, "taked_ship");
   }
 
   ngAfterViewInit(){
-    this.homePageService.waitOpponent().subscribe((data) => {
+    this.battleshipService.waitOpponent().subscribe(() => {
       this.isReady = true;
       this.notifier.notify( "info", "Waiting for the second player..." );
     });
   }
 
   takeShip(i): void{
-    this.shipToMove =4 - i;
+    this.shipToMove = 4 - i;
     if( this.ships[this.shipToMove-1]==0){
       this.notifier.notify( "warning", "No ships left!" );
       this.shipToMove = -10;
-      return;
     }
-    let id;
-    for(let j = 0; j<4; j++){
-      id = "ship"+j;
-      this.isShipTaked[j]=false;
-    }  
-    id = "ship"+i;
-    this.isShipTaked[i]=true;
+    else{
+        for(let j = 0; j<4; j++){
+          this.isShipTaked[j]=false;
+        }  
+        this.isShipTaked[i]=true;
+    }
+  }
+
+  turnShip(){
+    this.isVerticalMode = !this.isVerticalMode;
   }
 
   putShip(point: Point): void{
-    if(this.putToMyBoard(point.x, point.y)){
+    if(this.tryToPut(point.x, point.y)){
       --this.ships[this.shipToMove-1];
       if(this.ships[this.shipToMove-1]==0){
         this.isShipTaked[4-this.shipToMove]=false;
@@ -76,15 +72,14 @@ export class NewGameComponent{
     }
   }
 
-  putToMyBoard(iBase, jBase): boolean{
-
+  tryToPut(iBase, jBase): boolean{
     let checkMap = new Map();
     let chackBoard = this.copyBoard(this.myBoard);
     this.putedShip.clear();
-    
     checkMap = this.searchShipsNearBy(checkMap, iBase, jBase, chackBoard);
+
     if(!checkMap.has(1)&&!checkMap.has(2)){
-        this.putedShip.forEach(e => {
+      this.putedShip.forEach(e => {
         this.myBoard[e[1]][e[0]]=1;
       });
       this.myBoard[iBase][jBase]=1;
@@ -114,49 +109,48 @@ export class NewGameComponent{
   }
 
   shipInAir(point: Point): void{
-    let i = point.x;
-    let j = point.y;
     if(this.shipToMove!=-10){
-      let id;
       if(this.isVerticalMode){
-        for(let n = 0; n < this.shipToMove; n++){
-          let x = n;
-          if((i+n)>=10){
-            x = 9-(i+n);
-          }
-          if(this.myBoard[i+x][j]!=1){
-            this.myBoard[i+x][j] = 3;
-          }
-        }
+        this.showShipVertical(point)
       }
       else{
-        for(let n = 0; n < this.shipToMove; n++){
-          let x = n;
-          if((j+n)>=10){
-            x = 9-(j+n);
-          }
-          if(this.myBoard[i][j+x]!=1){
-            this.myBoard[i][j+x] = 3; 
-          }
-        }
+        this.showShipHorisontal(point)
       }
     }
   }
 
-  flewAway(point: Point): void{
-    if(this.shipToMove!=-10){
-      for(let i=0; i<10; i++){
-        for(let j=0; j<10; j++){
-          if(this.myBoard[i][j]!=1){
-            this.myBoard[i][j] = 0;
-          }
-        }
+  showShipHorisontal(point){
+    for(let n = 0; n < this.shipToMove; n++){
+      let x = n;
+      if((point.y+n)>=10){
+        x = 9-(point.y+n);
+      }
+      if(this.myBoard[point.x][point.y+x]!=1){
+        this.myBoard[point.x][point.y+x] = 3; 
       }
     }
   }
 
-  turnOver(){
-    this.isVerticalMode = !this.isVerticalMode;
+  showShipVertical(point){
+    for(let n = 0; n < this.shipToMove; n++){
+      let x = n;
+      if((point.x+n)>=10){
+        x = 9-(point.x+n);
+      }
+      if(this.myBoard[point.x+x][point.y]!=1){
+        this.myBoard[point.x+x][point.y] = 3;
+      }
+    }
+  }
+
+  flewAway(): void{
+    for(let i=0; i<10; i++){
+      for(let j=0; j<10; j++){
+        if(this.myBoard[i][j]!=1){
+          this.myBoard[i][j] = 0;
+        }
+      }
+    }
   }
 
   eraser(): void{
@@ -169,8 +163,6 @@ export class NewGameComponent{
       this.ships = [4, 3, 2, 1];
       this.shipToMove = -10;
     }
-    else{
-    }
   }
 
   copyBoard(board:number[][]): number[][]{
@@ -182,19 +174,23 @@ export class NewGameComponent{
 
   startGame(){
     if(!this.isReady){
-      let check = true;
+      if(this.isAllShipsUsed()){
+        this.battleshipService.startGame(this.myBoard);
+      }
+      else{
+        this.notifier.notify( "warning", "Some ships is unused!" );
+      }
+    }
+  }
+  
+  isAllShipsUsed(){
+    let check = true;
       for( let i=0; i<4; i++){
         if (this.ships[i]!=0){
           check = false;
           break;
         }
       }
-      if(check){
-        this.homePageService.startGame(this.myBoard);
-      }
-      else{
-        this.notifier.notify( "warning", "Some ships is unused!" );
-      }
-    }
+    return check;
   }
 }

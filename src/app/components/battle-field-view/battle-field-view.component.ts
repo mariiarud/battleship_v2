@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { Point } from '../point';
+import { Point } from '../../point';
 
 @Component({
   selector: 'app-battle-field-view',
@@ -51,8 +51,7 @@ export class BattleFieldViewComponent{
   @Output() onCellMouseLeave = new EventEmitter<Point>();
   flewAway(i , j) {
       if(i>0 && j>0){
-        let point = new Point(i-1, j-1);
-        this.onCellMouseLeave.emit(point);
+        this.onCellMouseLeave.emit();
       }
   }
 }

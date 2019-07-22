@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HomePageService} from '../home-page.service';
+
 import { OnGameComponent } from './on-game.component';
 import { BattleFieldViewModule } from '../battle-field-view/battle-field-view.module';
+
+import {BattleshipService} from '../../services/battleship.service';
+import {OnGameService} from '../../services/on-game.service';
 
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
@@ -56,6 +59,7 @@ const customNotifierOptions: NotifierOptions = {
     NotifierModule.withConfig(customNotifierOptions)
   ],
   exports:[OnGameComponent],
-  providers: [HomePageService]
+  providers: [BattleshipService,
+    OnGameService]
 })
 export class OnGameModule { }
