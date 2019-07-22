@@ -41,8 +41,6 @@ export class NewGameComponent{
     this.myFieldStyles.set(1, "pased_ship");
     this.myFieldStyles.set(2, "default_element");
     this.myFieldStyles.set(3, "taked_ship");
-    this.myFieldStyles.set(4, "damage_ship");
-    this.myFieldStyles.set(5, "dead_ship");
   }
 
   ngAfterViewInit(){
@@ -63,21 +61,16 @@ export class NewGameComponent{
     for(let j = 0; j<4; j++){
       id = "ship"+j;
       this.isShipTaked[j]=false;
-      // document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
     }  
     id = "ship"+i;
     this.isShipTaked[i]=true;
-      // document.getElementById(id).style.cssText = "background-color: #0c74eb70;"; 
   }
 
   putShip(point: Point): void{
     if(this.putToMyBoard(point.x, point.y)){
-      // let id;
       --this.ships[this.shipToMove-1];
       if(this.ships[this.shipToMove-1]==0){
         this.isShipTaked[4-this.shipToMove]=false;
-        // id = "ship"+(4-this.shipToMove);
-        // document.getElementById(id).style.cssText = "background-color: #0c74eb0;"; 
         this.shipToMove = -10;
       }
     }
@@ -86,11 +79,8 @@ export class NewGameComponent{
   putToMyBoard(iBase, jBase): boolean{
 
     let checkMap = new Map();
-    let chackBoard = [];
+    let chackBoard = this.copyBoard(this.myBoard);
     this.putedShip.clear();
-
-    for (let i = 0; i < this.myBoard.length; i++)
-    chackBoard[i] = this.myBoard[i].slice();
     
     checkMap = this.searchShipsNearBy(checkMap, iBase, jBase, chackBoard);
     if(!checkMap.has(1)&&!checkMap.has(2)){
@@ -103,13 +93,7 @@ export class NewGameComponent{
     else{
       this.notifier.notify( "warning", "Cannot be placed here!" );
       return false;
-        // field[point.x][point.y]=4;
-        // board[point.x][point.y]=4;
     }
-    // hitedShip.clear();
-
-    // this.myBoard = this.copyBoard(testBord);
-    
   }
 
   searchShipsNearBy(checkMap, i, j, chackBoard){
@@ -171,34 +155,14 @@ export class NewGameComponent{
     }
   }
 
-  copyBoard(arr:number[][]): number[][]{
-    let newArrey: number[][] = new Array();
-    for(let i=0; i<arr.length; i++){
-      newArrey[i]=[];
-      for(let j=0; j<arr[i].length; j++){
-        newArrey[i][j]=arr[i][j];
-      }
-    }
-    return newArrey;
-  }
-
   turnOver(){
     this.isVerticalMode = !this.isVerticalMode;
-    if(this.isVerticalMode){
-      document.getElementById("turn_over").style.cssText = "background-color: #0c74eb70; margin-right: 2em; margin-left: -1px;"; 
-    }
-    else{
-      document.getElementById("turn_over").style.cssText = "background-color: #0c74eb0; margin-right: 2em; margin-left: -1px;"; 
-    }
   }
 
   eraser(): void{
     if(!this.isReady){
       for (var i = 0; i < 10; i++){
             for (var j = 0; j < 10; j++){
-              let id;
-              id = "el"+(i+1)+"_"+(j+1);
-              document.getElementById(id).style.cssText = "background-color: #0c74eb0;  border: 2.8px solid #0c74eb;"; 
               this.myBoard[i][j] = 0;
         }
       }
@@ -206,8 +170,14 @@ export class NewGameComponent{
       this.shipToMove = -10;
     }
     else{
-
     }
+  }
+
+  copyBoard(board:number[][]): number[][]{
+    let newBoard: number[][] = new Array();
+    for (let i = 0; i < board.length; i++)
+      newBoard[i] = board[i].slice();
+    return newBoard;
   }
 
   startGame(){
